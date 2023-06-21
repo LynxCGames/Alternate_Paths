@@ -58,7 +58,7 @@ jobs:
         uses: actions/checkout@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          repository: LynxCGames/btd6-ci-dependencies
+          repository: Hoo-Knows/btd6-ci-dependencies
           ref: main
           path: ${{ env.BLOONSTD6 }}/MelonLoader/Il2CppAssemblies
 
