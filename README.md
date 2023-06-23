@@ -20,4 +20,6 @@ Currently Available Towers:
 
 A special thanks to Darinsky and Doombubbles for helping me fix a couple problems that I had.
 
+**NOTE** Not recommended to use with ultimate cross path currently. Might break/crash the game if you do.
+
 [![Requires BTD6 Mod Helper](https://raw.githubusercontent.com/gurrenm3/BTD-Mod-Helper/master/banner.png)](https://github.com/gurrenm3/BTD-Mod-Helper#readme)
