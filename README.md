@@ -9,6 +9,7 @@ A Paths++ mod that adds a brand new upgrade path to evry tower in the game. Crea
 
 Currently Available Towers:
     - Dart Monkey
+    - Boomerang Monkey
     - Bomb Shooter
     - Tack Shooter
     - Sniper
