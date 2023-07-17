@@ -58,12 +58,9 @@ public class PopElemental : UpgradePlusPlus<WizardAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-        {
-            weaponModel.projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
+        towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
 
-            weaponModel.projectile.GetDamageModel().damage += 2;
-        }
+        towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().damage += 2;
     }
 }
 
@@ -108,10 +105,8 @@ public class SorcererSupreme : UpgradePlusPlus<WizardAltPath>
 
         towerModel.GetAttackModel().weapons[0].rate /= 1.8f;
 
-        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-        {
-            weaponModel.projectile.GetDamageModel().damage += 3;
-            weaponModel.projectile.pierce += 4;
-        }
+
+        towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().damage += 3;
+        towerModel.GetAttackModel().weapons[0].projectile.pierce += 4;
     }
 }

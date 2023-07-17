@@ -17,6 +17,7 @@ using Il2CppFacepunch.Steamworks;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors.Emissions;
 using PathsPlusPlus;
 using AlternatePaths;
+using Il2CppAssets.Scripts.Unity.Bloons;
 
 namespace Sniper;
 
@@ -87,6 +88,9 @@ public class HighPowered : UpgradePlusPlus<SniperAltPath>
             blast.radius += 4;
             blast.pierce += 6;
 
+            var stun = Game.instance.model.GetTower(TowerType.SniperMonkey, 4).GetAttackModel().weapons[0].projectile.GetBehavior<SlowMaimMoabModel>().Duplicate();
+            blast.AddBehavior(stun);
+
             explosion.effectModel.scale *= 1.5f;
         }
 
@@ -109,25 +113,10 @@ public class FlackGun : UpgradePlusPlus<SniperAltPath>
     {
         if (towerModel.appliedUpgrades.Contains(UpgradeType.ShrapnelShot))
         {
-            towerModel.GetAttackModel().weapons[0] = Game.instance.model.GetTower(TowerType.SniperMonkey, 0, 1).GetAttackModel().weapons[0].Duplicate();
-            towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().damage = 3;
-            towerModel.GetAttackModel().weapons[0].projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
-
-            var bomb = Game.instance.model.GetTower(TowerType.BombShooter, 0).GetAttackModel().weapons[0].projectile.Duplicate();
-            var blast = bomb.GetBehavior<CreateProjectileOnContactModel>().projectile.Duplicate();
-            var explosion = bomb.GetBehavior<CreateEffectOnContactModel>().Duplicate();
-
-            blast.GetDamageModel().damage = 1;
-            blast.radius = 8;
-            blast.pierce = 6;
-            blast.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
-
-
-            var contactModel = new CreateProjectileOnContactModel("aaa", blast, new ArcEmissionModel("ArcEmissionModel_", 1, 0, 0, null, false, false), true, false, false)
-            { name = "RifleBlast_" };
-
-            towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(contactModel);
-            towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(explosion);
+            foreach (var behaviors in towerModel.GetAttackModel().weapons[0].projectile.GetBehaviors<EmitOnDamageModel>().ToArray())
+            {
+                towerModel.GetAttackModel().weapons[0].projectile.RemoveBehavior(behaviors);
+            }
         }
 
         var weapon = towerModel.GetAttackModel().weapons[0];
@@ -184,27 +173,64 @@ public class Bloonzooka : UpgradePlusPlus<SniperAltPath>
         var homing = Game.instance.model.GetTowerFromId("WizardMonkey-500").GetWeapon().projectile.GetBehavior<TrackTargetModel>().Duplicate();
 
         homing.distance = 999;
-        homing.constantlyAquireNewTarget = true;
+        homing.constantlyAquireNewTarget = false;
 
         rocket.projectile.AddBehavior(homing);
+        rocket.rate = Game.instance.model.GetTower(TowerType.SniperMonkey).GetAttackModel().weapons[0].rate;
         rocket.projectile.GetBehavior<TravelStraitModel>().Lifespan *= 3;
         rocket.projectile.GetBehavior<TravelStraitModel>().Speed /= 1.45f;
         rocket.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
-
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.FasterFiring))
-        {
-            rocket.rate /= 1.15f;
-        }
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.EvenFasterFiring))
-        {
-            rocket.rate /= 1.2f;
-        }
 
 
         var shrapnel = Game.instance.model.GetTower(TowerType.TackShooter).GetAttackModel().weapons[0].projectile.Duplicate();
         shrapnel.GetBehavior<TravelStraitModel>().Speed *= 1.5f;
         shrapnel.GetBehavior<TravelStraitModel>().Lifespan *= 1.75f;
         shrapnel.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+
+
+        var blast = rocket.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
+        blast.GetDamageModel().damage = 7;
+        blast.radius = 30;
+        blast.pierce = 65;
+        blast.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+        blast.GetDamageModel().immuneBloonProperties = BloonProperties.None;
+
+
+        var explosion = rocket.projectile.GetBehavior<CreateEffectOnContactModel>().effectModel;
+        explosion.scale *= 3f;
+
+
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.FullMetalJacket))
+        {
+            blast.GetDamageModel().damage += 1;
+            shrapnel.GetDamageModel().immuneBloonProperties = BloonProperties.None;
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.LargeCalibre))
+        {
+            blast.GetDamageModel().damage += 2;
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.DeadlyPrecision))
+        {
+            blast.GetDamageModel().damage += 10;
+
+            blast.hasDamageModifiers = true;
+            blast.AddBehavior(new DamageModifierForBloonTypeModel("aaa", "Ceramic", 1, 15, true));
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.MaimMOAB))
+        {
+            blast.GetDamageModel().damage += 10;
+
+            var stun = Game.instance.model.GetTower(TowerType.SniperMonkey, 4).GetAttackModel().weapons[0].projectile.GetBehavior<SlowMaimMoabModel>().Duplicate();
+            blast.AddBehavior(stun);
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.CrippleMOAB))
+        {
+            blast.GetDamageModel().damage += 255;
+
+            var stun = Game.instance.model.GetTower(TowerType.SniperMonkey, 5).GetAttackModel().weapons[0].projectile.GetBehavior<SlowMaimMoabModel>().Duplicate();
+            blast.AddBehavior(stun);
+        }
+
 
         if (towerModel.appliedUpgrades.Contains(UpgradeType.ShrapnelShot))
         {
@@ -217,32 +243,56 @@ public class Bloonzooka : UpgradePlusPlus<SniperAltPath>
             shrapnel.pierce = 4;
         }
 
+
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.BouncingBullet))
+        {
+            var rocket2 = rocket.projectile.Duplicate();
+            var rocket3 = rocket.projectile.Duplicate();
+
+            var rocket2Model = new CreateProjectileOnContactModel("aaa", rocket2, new ArcEmissionModel("ArcEmissionModel_", 1, 0, 0, null, true, false), true, false, false) { name = "RocketBounce" };
+            var rocket3Model = new CreateProjectileOnContactModel("aaa", rocket3, new ArcEmissionModel("ArcEmissionModel_", 1, 0, 0, null, true, false), true, false, false) { name = "RocketBounce" };
+
+            rocket.projectile.AddBehavior(rocket2Model);
+            rocket2.AddBehavior(rocket3Model);
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.SupplyDrop))
+        {
+            shrapnel.GetDamageModel().damage += 3;
+            shrapnel.pierce += 4;
+        }
+
         var fragmentModel = new CreateProjectileOnContactModel("aaa", shrapnel, new ArcEmissionModel("ArcEmissionModel_", 16, 0, 360, null, true, false), true, false, false)
         { name = "RifleShrapnel_" };
 
         rocket.projectile.AddBehavior(fragmentModel);
 
 
-        var blast = rocket.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
-        blast.GetDamageModel().damage = 7;
-        blast.radius = 30;
-        blast.pierce = 65;
-        blast.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
-        blast.GetDamageModel().immuneBloonProperties = BloonProperties.None;
-
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.FullMetalJacket))
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.FasterFiring))
         {
-            blast.GetDamageModel().damage += 1;
-            shrapnel.GetDamageModel().immuneBloonProperties = BloonProperties.None;
+            rocket.rate = Game.instance.model.GetTower(TowerType.SniperMonkey, 0, 0, 1).GetAttackModel().weapons[0].rate;
         }
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.LargeCalibre))
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.EvenFasterFiring))
         {
-            blast.GetDamageModel().damage += 2;
+            rocket.rate = Game.instance.model.GetTower(TowerType.SniperMonkey, 0, 0, 2).GetAttackModel().weapons[0].rate;
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.SemiAutomatic))
+        {
+            rocket.rate = Game.instance.model.GetTower(TowerType.SniperMonkey, 0, 0, 3).GetAttackModel().weapons[0].rate;
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.FullAutoRifle))
+        {
+            rocket.rate = Game.instance.model.GetTower(TowerType.SniperMonkey, 0, 0, 4).GetAttackModel().weapons[0].rate;
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.EliteDefender))
+        {
+            rocket.rate = Game.instance.model.GetTower(TowerType.SniperMonkey, 0, 0, 5).GetAttackModel().weapons[0].rate;
         }
 
 
-        var explosion = rocket.projectile.GetBehavior<CreateEffectOnContactModel>().effectModel;
-        explosion.scale *= 3f;
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.EliteSniper))
+        {
+            rocket.rate /= 2f;
+        }
 
 
         towerModel.GetAttackModel().weapons[0] = rocket;
@@ -261,39 +311,44 @@ public class BigBang : UpgradePlusPlus<SniperAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        var megaRocket = Game.instance.model.GetTower(TowerType.BombShooter, 0, 2).GetAttackModel().weapons[0].Duplicate();
+        var megaRocket = towerModel.GetAttackModel().weapons[0];
+        megaRocket.projectile.display = Game.instance.model.GetTower(TowerType.BombShooter, 0, 4).GetAttackModel().weapons[0].projectile.display;
+
+        var megaBlast = megaRocket.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
+        megaBlast.GetDamageModel().damage += 218;
+        megaBlast.radius = 85;
+        megaBlast.pierce = 999;
+
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.FullMetalJacket))
+        {
+            megaBlast.GetDamageModel().damage += 9;
+        }
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.LargeCalibre))
+        {
+            megaBlast.GetDamageModel().damage += 13;
+        }
+
+        var explosion = megaRocket.projectile.GetBehavior<CreateEffectOnContactModel>().effectModel;
+        explosion.scale *= 3f;
+
+        foreach (var behavior in megaRocket.projectile.GetBehaviors<CreateProjectileOnContactModel>().ToArray())
+        {
+            if (behavior.name.Contains("RifleShrapnel_"))
+            {
+                megaRocket.projectile.RemoveBehavior(behavior);
+            }
+
+            if (behavior.name.Contains("RocketBounce"))
+            {
+                megaRocket.projectile.RemoveBehavior(behavior);
+            }
+        }
+
+
         var homing = Game.instance.model.GetTowerFromId("WizardMonkey-500").GetWeapon().projectile.GetBehavior<TrackTargetModel>().Duplicate();
 
         homing.distance = 999;
         homing.constantlyAquireNewTarget = true;
-
-        megaRocket.projectile.AddBehavior(homing);
-        megaRocket.projectile.GetBehavior<TravelStraitModel>().Lifespan *= 3;
-        megaRocket.projectile.GetBehavior<TravelStraitModel>().Speed /= 1.5f;
-        megaRocket.projectile.display = Game.instance.model.GetTower(TowerType.BombShooter, 0, 4).GetAttackModel().weapons[0].projectile.display;
-        megaRocket.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
-
-
-        var megaBlast = megaRocket.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
-        megaBlast.GetDamageModel().damage = 225;
-        megaBlast.radius = 85;
-        megaBlast.pierce = 999;
-        megaBlast.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
-        megaBlast.GetDamageModel().immuneBloonProperties = BloonProperties.None;
-
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.FullMetalJacket))
-        {
-            megaBlast.GetDamageModel().damage += 10;
-        }
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.LargeCalibre))
-        {
-            megaBlast.GetDamageModel().damage += 15;
-        }
-
-
-        var explosion = megaRocket.projectile.GetBehavior<CreateEffectOnContactModel>().effectModel;
-        explosion.scale *= 8f;
-
 
         var miniRocket = Game.instance.model.GetTower(TowerType.BombShooter, 0, 2).GetAttackModel().weapons[0].Duplicate();
 
@@ -301,7 +356,6 @@ public class BigBang : UpgradePlusPlus<SniperAltPath>
         miniRocket.projectile.GetBehavior<TravelStraitModel>().Lifespan *= 3;
         miniRocket.projectile.GetBehavior<TravelStraitModel>().Speed /= 1.35f;
         miniRocket.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
-
 
         var miniBlast = miniRocket.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
         miniBlast.GetDamageModel().damage = 8;
@@ -320,9 +374,26 @@ public class BigBang : UpgradePlusPlus<SniperAltPath>
             fragmentModel.emission = new ArcEmissionModel("ArcEmissionModel_", 8, 0, 360, null, true, false);
         }
 
+
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.SupplyDrop))
+        {
+            miniBlast.GetDamageModel().damage *= 2;
+            miniBlast.pierce *= 1.5f;
+        }
+
         megaRocket.projectile.AddBehavior(fragmentModel);
 
 
-        towerModel.GetAttackModel().weapons[0] = megaRocket;
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.BouncingBullet))
+        {
+            var rocket2 = megaRocket.projectile.Duplicate();
+            var rocket3 = megaRocket.projectile.Duplicate();
+
+            var rocket2Model = new CreateProjectileOnContactModel("aaa", rocket2, new ArcEmissionModel("ArcEmissionModel_", 1, 0, 0, null, true, false), true, false, false) { name = "RocketBounce" };
+            var rocket3Model = new CreateProjectileOnContactModel("aaa", rocket3, new ArcEmissionModel("ArcEmissionModel_", 1, 0, 0, null, true, false), true, false, false) { name = "RocketBounce" };
+
+            megaRocket.projectile.AddBehavior(rocket2Model);
+            rocket2.AddBehavior(rocket3Model);
+        }
     }
 }
