@@ -13,6 +13,9 @@ using AlternatePaths;
 using BTD_Mod_Helper.Api.Towers;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors;
 using Il2CppAssets.Scripts.Models.TowerSets;
+using BTD_Mod_Helper.Api.Display;
+using Il2CppAssets.Scripts.Unity.Display;
+
 namespace Engineer;
 
 public class TemperedNails : UpgradePlusPlus<EngineerAltPath>
@@ -68,20 +71,9 @@ public class BurstFire : UpgradePlusPlus<EngineerAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.SentryGun))
-        {
-            foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-            {
-                if (weaponModel.projectile.GetBehavior<CreateTowerModel>() == null)
-                {
-                    weaponModel.emission = new ArcEmissionModel("ArcEmissionModel_", 3, 0, 25, null, false, false);
-                }
-            }
-        }
-        else
-        {
+
             towerModel.GetAttackModel().weapons[0].emission = new ArcEmissionModel("ArcEmissionModel_", 3, 0, 25, null, false, false);
-        }
+        
     }
 }
 
@@ -97,22 +89,28 @@ public class Prototypes : UpgradePlusPlus<EngineerAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        var sentry = Game.instance.model.GetTowerFromId("EngineerMonkey-100").GetAttackModel().Duplicate();
-        sentry.range = towerModel.range;
-        sentry.name = "ElectricV1_Place";
-        sentry.weapons[0].projectile.RemoveBehavior<CreateTowerModel>();
-        sentry.weapons[0].projectile.AddBehavior(new CreateTowerModel("SentryPlace", GetTowerModel<ElectricSentryV1>().Duplicate(), 0f, true, false, false, true, true));
-
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.FasterEngineering))
+        foreach (var behavior in Game.instance.model.GetTowerFromId("EngineerMonkey-100").GetAttackModels().ToArray())
         {
-            sentry.weapons[0].Rate = 5f;
-        }
-        else
-        {
-            sentry.weapons[0].Rate = 7f;
-        }
+            if (behavior.name.Contains("Spawner"))
+            {
+                var spawner = behavior.Duplicate();
+                spawner.range = towerModel.range;
+                spawner.name = "Electric_Place";
+                spawner.weapons[0].projectile.RemoveBehavior<CreateTowerModel>();
+                spawner.weapons[0].projectile.AddBehavior(new CreateTowerModel("SentryPlace", GetTowerModel<ElectricSentryV1>().Duplicate(), 0f, true, false, false, true, true));
 
-        towerModel.AddBehavior(sentry);
+                if (towerModel.appliedUpgrades.Contains(UpgradeType.FasterEngineering))
+                {
+                    spawner.weapons[0].Rate = 5f;
+                }
+                else
+                {
+                    spawner.weapons[0].Rate = 7f;
+                }
+
+                towerModel.AddBehavior(spawner);
+            }
+        }
     }
 }
 
@@ -128,19 +126,13 @@ public class AerialAdvancements : UpgradePlusPlus<EngineerAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        foreach (var attacks in towerModel.GetAttackModels())
+        foreach (var attack in towerModel.GetAttackModels())
         {
-            if (attacks.name.Contains("Place"))
+            if (attack.name.Contains("Place"))
             {
-                towerModel.RemoveBehavior(attacks);
+                attack.weapons[0].projectile.GetBehavior<CreateTowerModel>().tower = GetTowerModel<ElectricSentryV2>().Duplicate();
             }
         }
-
-        var sentry = Game.instance.model.GetTowerFromId("EngineerMonkey-100").GetAttackModel().Duplicate();
-        sentry.range = towerModel.range;
-        sentry.name = "ElectricV2_Place";
-        sentry.weapons[0].projectile.RemoveBehavior<CreateTowerModel>();
-        sentry.weapons[0].projectile.AddBehavior(new CreateTowerModel("SentryPlace", GetTowerModel<ElectricSentryV2>().Duplicate(), 0f, true, false, false, true, true));
 
         var drones = Game.instance.model.GetTower(TowerType.Etienne).GetBehavior<DroneSupportModel>().Duplicate();
         drones.count = 2;
@@ -156,15 +148,12 @@ public class AerialAdvancements : UpgradePlusPlus<EngineerAltPath>
         if (towerModel.appliedUpgrades.Contains(UpgradeType.FasterEngineering))
         {
             droneAttackModel.weapons[0].rate /= 1.75f;
-            sentry.weapons[0].Rate = 5f;
         }
         else
         {
             droneAttackModel.weapons[0].rate /= 1.35f;
-            sentry.weapons[0].Rate = 7f;
         }
 
-        towerModel.AddBehavior(sentry);
         towerModel.AddBehavior(drones);
     }
 }
@@ -190,30 +179,13 @@ public class Overcharge : UpgradePlusPlus<EngineerAltPath>
         droneAttackModel.weapons[0].rate /= 1.6f;
 
 
-        foreach (var attacks in towerModel.GetAttackModels())
+        foreach (var attack in towerModel.GetAttackModels())
         {
-            if (attacks.name.Contains("Place"))
+            if (attack.name.Contains("Place"))
             {
-                towerModel.RemoveBehavior(attacks);
+                attack.weapons[0].projectile.GetBehavior<CreateTowerModel>().tower = GetTowerModel<ElectricSentryV3>().Duplicate();
             }
         }
-
-        var sentry = Game.instance.model.GetTowerFromId("EngineerMonkey-100").GetAttackModel().Duplicate();
-        sentry.range = towerModel.range;
-        sentry.name = "ElectricV3_Place";
-        sentry.weapons[0].projectile.RemoveBehavior<CreateTowerModel>();
-        sentry.weapons[0].projectile.AddBehavior(new CreateTowerModel("SentryPlace", GetTowerModel<ElectricSentryV3>().Duplicate(), 0f, true, false, false, true, true));
-
-        if (towerModel.appliedUpgrades.Contains(UpgradeType.FasterEngineering))
-        {
-            sentry.weapons[0].Rate = 5f;
-        }
-        else
-        {
-            sentry.weapons[0].Rate = 7f;
-        }
-
-        towerModel.AddBehavior(sentry);
     }
 }
 
@@ -253,6 +225,21 @@ public class ElectricSentryV1 : ModTower
         towerModel.isSubTower = true;
         towerModel.AddBehavior(new TowerExpireModel("ExpireModel", 20f, 5, false, false));
     }
+
+    public class V1SentryDisplay : ModTowerDisplay<ElectricSentryV1>
+    {
+        public override float Scale => 1f;
+        public override string BaseDisplay => GetDisplay(TowerType.SentryCold);
+
+        public override bool UseForTower(int[] tiers)
+        {
+            return true;
+        }
+        public override void ModifyDisplayNode(UnityDisplayNode node)
+        {
+
+        }
+    }
 }
 
 public class ElectricSentryV2 : ModTower
@@ -270,7 +257,7 @@ public class ElectricSentryV2 : ModTower
     public override int BottomPathUpgrades => 0;
 
 
-    public override string DisplayName => "Lightning Sentry";
+    public override string DisplayName => "Lightning Sentry V2";
 
     public override void ModifyBaseTowerModel(TowerModel towerModel)
     {
@@ -292,6 +279,21 @@ public class ElectricSentryV2 : ModTower
         towerModel.isSubTower = true;
         towerModel.AddBehavior(new TowerExpireModel("ExpireModel", 20f, 5, false, false));
     }
+
+    public class V2SentryDisplay : ModTowerDisplay<ElectricSentryV2>
+    {
+        public override float Scale => 1f;
+        public override string BaseDisplay => GetDisplay(TowerType.SentryCold);
+
+        public override bool UseForTower(int[] tiers)
+        {
+            return true;
+        }
+        public override void ModifyDisplayNode(UnityDisplayNode node)
+        {
+
+        }
+    }
 }
 
 public class ElectricSentryV3 : ModTower
@@ -309,7 +311,7 @@ public class ElectricSentryV3 : ModTower
     public override int BottomPathUpgrades => 0;
 
 
-    public override string DisplayName => "Lightning Sentry";
+    public override string DisplayName => "Overcharge Sentry";
 
     public override void ModifyBaseTowerModel(TowerModel towerModel)
     {
@@ -321,5 +323,20 @@ public class ElectricSentryV3 : ModTower
 
         towerModel.isSubTower = true;
         towerModel.AddBehavior(new TowerExpireModel("ExpireModel", 20f, 5, false, false));
+    }
+
+    public class V3SentryDisplay : ModTowerDisplay<ElectricSentryV3>
+    {
+        public override float Scale => 1f;
+        public override string BaseDisplay => GetDisplay(TowerType.SentryCold);
+
+        public override bool UseForTower(int[] tiers)
+        {
+            return true;
+        }
+        public override void ModifyDisplayNode(UnityDisplayNode node)
+        {
+
+        }
     }
 }

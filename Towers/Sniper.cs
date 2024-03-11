@@ -1,23 +1,13 @@
 ﻿using BTD_Mod_Helper.Extensions;
 using Il2CppAssets.Scripts.Models.Towers;
-using Il2CppAssets.Scripts.Models.Towers.Behaviors.Abilities.Behaviors;
 using Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors;
-using Il2CppAssets.Scripts.Models.Towers.Weapons;
 using Il2CppAssets.Scripts.Unity;
-using Il2CppSystem.Linq;
-using AlternatePaths.Displays.Projectiles;
-using BTD_Mod_Helper;
-using System.Linq;
 using Il2Cpp;
 using BTD_Mod_Helper.Api.Enums;
 using Il2CppAssets.Scripts.Models.Towers.Filters;
-using Il2CppAssets.Scripts.Models.Towers.Behaviors.Attack;
-using Il2CppAssets.Scripts.Models.GenericBehaviors;
-using Il2CppFacepunch.Steamworks;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors.Emissions;
 using PathsPlusPlus;
 using AlternatePaths;
-using Il2CppAssets.Scripts.Unity.Bloons;
 
 namespace Sniper;
 

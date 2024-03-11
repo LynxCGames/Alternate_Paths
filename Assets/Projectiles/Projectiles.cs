@@ -64,6 +64,36 @@ namespace AlternatePaths.Displays.Projectiles
         }
     }
 
+    public class GlueTrapYellow : ModDisplay
+    {
+        public override string BaseDisplay => Generic2dDisplay;
+
+        public override void ModifyDisplayNode(UnityDisplayNode node)
+        {
+            Set2DTexture(node, Name);
+        }
+    }
+
+    public class GlueTrapGreen : ModDisplay
+    {
+        public override string BaseDisplay => Generic2dDisplay;
+
+        public override void ModifyDisplayNode(UnityDisplayNode node)
+        {
+            Set2DTexture(node, Name);
+        }
+    }
+
+    public class GlueTrapPink : ModDisplay
+    {
+        public override string BaseDisplay => Generic2dDisplay;
+
+        public override void ModifyDisplayNode(UnityDisplayNode node)
+        {
+            Set2DTexture(node, Name);
+        }
+    }
+
     public class Laser : ModDisplay
     {
         public override string BaseDisplay => Generic2dDisplay;

@@ -12,8 +12,6 @@ using Il2CppAssets.Scripts.Models.Towers.Behaviors.Attack;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors.Emissions;
 using PathsPlusPlus;
 using AlternatePaths;
-using System;
-using Il2CppAssets.Scripts.Data.Quests;
 using PlasmaEffects;
 
 namespace BombShooter;
@@ -34,36 +32,39 @@ public class Incendiary : UpgradePlusPlus<BombAltPath>
             GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.GetBehavior<AddBehaviorToBloonModel>().Duplicate();
 
 
-        foreach (var behavior in towerModel.GetAttackModel().weapons[0].projectile.GetBehaviors<CreateProjectileOnContactModel>().ToArray())
+        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
         {
-            behavior.projectile.AddBehavior(fire);
-            behavior.projectile.collisionPasses = new int[] { 0, -1 };
-
-
-            if (behavior.projectile.HasBehavior<CreateProjectileOnExhaustFractionModel>() == true)
+            foreach (var behavior in weaponModel.projectile.GetBehaviors<CreateProjectileOnContactModel>().ToArray())
             {
-                behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(fire);
-                behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.collisionPasses = new int[] { 0, -1 };
-            }
-        }
+                behavior.projectile.AddBehavior(fire);
+                behavior.projectile.collisionPasses = new int[] { 0, -1 };
 
 
-        foreach (var mainBomb in towerModel.GetAttackModel().weapons[0].projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
-        {
-            mainBomb.projectile.AddBehavior(fire);
-            mainBomb.projectile.collisionPasses = new int[] { 0, -1 };
-
-
-            foreach (var clusterBomb in mainBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
-            {
-                clusterBomb.projectile.AddBehavior(fire);
-                clusterBomb.projectile.collisionPasses = new int[] { 0, -1 };
-
-
-                foreach (var secondCluster in clusterBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+                if (behavior.projectile.HasBehavior<CreateProjectileOnExhaustFractionModel>() == true)
                 {
-                    secondCluster.projectile.AddBehavior(fire);
-                    secondCluster.projectile.collisionPasses = new int[] { 0, -1 };
+                    behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(fire);
+                    behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.collisionPasses = new int[] { 0, -1 };
+                }
+            }
+
+
+            foreach (var mainBomb in weaponModel.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+            {
+                mainBomb.projectile.AddBehavior(fire);
+                mainBomb.projectile.collisionPasses = new int[] { 0, -1 };
+
+
+                foreach (var clusterBomb in mainBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+                {
+                    clusterBomb.projectile.AddBehavior(fire);
+                    clusterBomb.projectile.collisionPasses = new int[] { 0, -1 };
+
+
+                    foreach (var secondCluster in clusterBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+                    {
+                        secondCluster.projectile.AddBehavior(fire);
+                        secondCluster.projectile.collisionPasses = new int[] { 0, -1 };
+                    }
                 }
             }
         }
@@ -82,46 +83,49 @@ public class CeramicBuster : UpgradePlusPlus<BombAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        foreach (var behavior in towerModel.GetAttackModel().weapons[0].projectile.GetBehaviors<CreateProjectileOnContactModel>().ToArray())
+        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
         {
-            behavior.projectile.hasDamageModifiers = true;
-
-            behavior.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
-            behavior.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
-
-
-            if (behavior.projectile.HasBehavior<CreateProjectileOnExhaustFractionModel>() == true)
+            foreach (var behavior in weaponModel.projectile.GetBehaviors<CreateProjectileOnContactModel>().ToArray())
             {
-                behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.hasDamageModifiers = true;
+                behavior.projectile.hasDamageModifiers = true;
 
-                behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
-                behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
-            }
-        }
+                behavior.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
+                behavior.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
 
 
-        foreach (var mainBomb in towerModel.GetAttackModel().weapons[0].projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
-        {
-            mainBomb.projectile.hasDamageModifiers = true;
-
-            mainBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
-            mainBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
-
-
-            foreach (var clusterBomb in mainBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
-            {
-                clusterBomb.projectile.hasDamageModifiers = true;
-
-                clusterBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
-                clusterBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
-
-
-                foreach (var secondCluster in clusterBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+                if (behavior.projectile.HasBehavior<CreateProjectileOnExhaustFractionModel>() == true)
                 {
-                    secondCluster.projectile.hasDamageModifiers = true;
+                    behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.hasDamageModifiers = true;
 
-                    secondCluster.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
-                    secondCluster.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
+                    behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
+                    behavior.projectile.GetBehavior<CreateProjectileOnExhaustFractionModel>().projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
+                }
+            }
+
+
+            foreach (var mainBomb in weaponModel.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+            {
+                mainBomb.projectile.hasDamageModifiers = true;
+
+                mainBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
+                mainBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
+
+
+                foreach (var clusterBomb in mainBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+                {
+                    clusterBomb.projectile.hasDamageModifiers = true;
+
+                    clusterBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
+                    clusterBomb.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
+
+
+                    foreach (var secondCluster in clusterBomb.projectile.GetBehaviors<CreateProjectileOnExhaustFractionModel>().ToArray())
+                    {
+                        secondCluster.projectile.hasDamageModifiers = true;
+
+                        secondCluster.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
+                        secondCluster.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Fortified", 1, 3, false, false) { name = "FortifiedModifier_" });
+                    }
                 }
             }
         }
@@ -204,7 +208,7 @@ public class LightningCharge : UpgradePlusPlus<BombAltPath>
 
 public class PlasmaBomb : UpgradePlusPlus<BombAltPath>
 {
-    public override int Cost => 4500;
+    public override int Cost => 6500;
     public override int Tier => 4;
     public override string Icon => "Tier4 Bomb Icon";
     public override string Portrait => "Tier4 Bomb";

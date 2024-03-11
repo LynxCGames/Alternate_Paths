@@ -5,10 +5,11 @@
 
 <h1 align="center">4th Path Overhaul</h1>
 
-A Paths++ mod that adds a brand new upgrade path to evry tower in the game. Create powerful prototype sentries with the engineer, wield pure pop magic with the sorcerer supreme wizard, block off the exit with the lockdown spike factory, or just obliterate the Bloons with the sniper or tack shooter.
+A Paths++ mod that adds a brand new upgrade path to every tower in the game. Create powerful prototype sentries with the engineer, wield pure pop magic with the sorcerer supreme wizard, block off the exit with the lockdown spike factory, or just obliterate the Bloons with the sniper or tack shooter.
 
 Currently Available Towers:
     - Dart Monkey
+    - Boomerang Monkey
     - Bomb Shooter
     - Tack Shooter
     - Sniper

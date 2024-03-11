@@ -8,6 +8,7 @@ using System.Linq;
 using Il2Cpp;
 using PathsPlusPlus;
 using AlternatePaths;
+using BTD_Mod_Helper.Api.Enums;
 
 namespace Spactory;
 
@@ -64,7 +65,7 @@ public class ShieldGenerator : UpgradePlusPlus<SpactoryAltPath>
     public override string Portrait => "Tier3 Spactory";
 
     public override string DisplayName => "Shield Generator";
-    public override string Description => "Spike Factory now produces force fields that block and pop Bloons.";
+    public override string Description => "Spike Factory now produces force fields that knockback Bloons and can pop Lead Bloons. White Hot Spikes increases damage and allows force fields to pop purple Bloons.";
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
@@ -76,8 +77,15 @@ public class ShieldGenerator : UpgradePlusPlus<SpactoryAltPath>
             weaponModel.projectile.pierce *= 2;
 
             weaponModel.projectile.AddBehavior(new WindModel("WindModel_", 0, 10, 50, false, null, 0, null, 1));
+            weaponModel.projectile.GetDamageModel().immuneBloonProperties = BloonProperties.Purple;
 
             weaponModel.projectile.ApplyDisplay<ForceFields>();
+
+            if (towerModel.appliedUpgrades.Contains(UpgradeType.WhiteHotSpikes))
+            {
+                towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().damage += 1;
+                weaponModel.projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
+            }
         }
     }
 }

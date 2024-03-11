@@ -1,19 +1,13 @@
 ﻿using AlternatePaths;
 using BTD_Mod_Helper.Api.Enums;
 using BTD_Mod_Helper.Extensions;
-using Il2Cpp;
 using Il2CppAssets.Scripts.Models.Bloons.Behaviors;
-using Il2CppAssets.Scripts.Models.Map.Actions;
 using Il2CppAssets.Scripts.Models.Towers;
-using Il2CppAssets.Scripts.Models.Towers.Behaviors;
-using Il2CppAssets.Scripts.Models.Towers.Behaviors.Attack.Behaviors;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors.Emissions;
 using Il2CppAssets.Scripts.Models.Towers.Filters;
-using Il2CppAssets.Scripts.Models.Towers.Projectiles;
 using Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors;
 using Il2CppAssets.Scripts.Models.Towers.Weapons;
 using Il2CppAssets.Scripts.Unity;
-using Il2CppNinjaKiwi.CustomAnimation;
 using Il2CppSystem.Linq;
 using PathsPlusPlus;
 using AlternatePaths.Displays.Projectiles;
@@ -24,7 +18,7 @@ namespace Boomerang;
 
 public class CamoTraining : UpgradePlusPlus<BoomerangAltPath>
 {
-    public override int Cost => 500;
+    public override int Cost => 200;
     public override int Tier => 1;
     public override string Icon => "Tier1 Boomerang Icon";
     public override string Portrait => "Tier1 Boomerang";
@@ -46,7 +40,7 @@ public class CamoTraining : UpgradePlusPlus<BoomerangAltPath>
 
 public class Chakrams : UpgradePlusPlus<BoomerangAltPath>
 {
-    public override int Cost => 500;
+    public override int Cost => 400;
     public override int Tier => 2;
     public override string Icon => "Tier2 Boomerang Icon";
     public override string Portrait => "Tier2 Boomerang";
@@ -99,7 +93,7 @@ public class Chakrams : UpgradePlusPlus<BoomerangAltPath>
 
 public class SeekerBlades : UpgradePlusPlus<BoomerangAltPath>
 {
-    public override int Cost => 500;
+    public override int Cost => 720;
     public override int Tier => 3;
     public override string Icon => "Tier3 Boomerang Icon";
     public override string Portrait => "Tier3 Boomerang";
@@ -131,7 +125,7 @@ public class SeekerBlades : UpgradePlusPlus<BoomerangAltPath>
 
 public class PlasmaChakrams : UpgradePlusPlus<BoomerangAltPath>
 {
-    public override int Cost => 500;
+    public override int Cost => 5200;
     public override int Tier => 4;
     public override string Icon => "Tier4 Boomerang Icon";
     public override string Portrait => "Tier4 Boomerang";
@@ -162,7 +156,7 @@ public class PlasmaChakrams : UpgradePlusPlus<BoomerangAltPath>
 
 public class BladeGod : UpgradePlusPlus<BoomerangAltPath>
 {
-    public override int Cost => 500;
+    public override int Cost => 56000;
     public override int Tier => 5;
     public override string Icon => "Tier5 Boomerang Icon";
     public override string Portrait => "Tier5 Boomerang";
@@ -184,7 +178,7 @@ public class BladeGod : UpgradePlusPlus<BoomerangAltPath>
             weaponModel.projectile.GetDamageModel().damage *= 3;
             weaponModel.projectile.GetBehavior<AddBehaviorToBloonModel>().GetBehavior<DamageOverTimeModel>().damage += 2;
             weaponModel.projectile.AddBehavior(superBleed);
-            weaponModel.projectile.AddBehavior(new AddBonusDamagePerHitToBloonModel("a", "b", 8f, 3, 15, true, false, false));
+            weaponModel.projectile.AddBehavior(new AddBonusDamagePerHitToBloonModel("aaa", "bleed_Bonus_Damage", 8f, 3, 15, true, false, false, "bleed"));
         }
 
         towerModel.GetAttackModel().weapons[0].projectile.ApplyDisplay<BladeGodProj>();
