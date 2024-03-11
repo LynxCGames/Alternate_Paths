@@ -12,13 +12,17 @@ Currently Available Towers:
     - Boomerang Monkey
     - Bomb Shooter
     - Tack Shooter
+    - Ice Monkey
+    - Glue Gunner
     - Sniper
+    - Monkey Sub
+    - Monkey Ace
     - Heli Pilot
+    - Dartling Gunner
     - Wizard
     - Ninja
+    - Banana Farm
     - Spike Factory
     - Engineer
-
-A special thanks to Darinsky and Doombubbles for helping me fix a couple problems that I had.
 
 [![Requires BTD6 Mod Helper](https://raw.githubusercontent.com/gurrenm3/BTD-Mod-Helper/master/banner.png)](https://github.com/gurrenm3/BTD-Mod-Helper#readme)
