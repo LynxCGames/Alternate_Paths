@@ -3,7 +3,7 @@
 public static class ModHelperData
 {
     public const string WorksOnVersion = "41.3";
-    public const string Version = "1.2.0";
+    public const string Version = "1.2.1";
     public const string Name = "4th Path Overhaul";
     public const string Author = "LynxC";
 

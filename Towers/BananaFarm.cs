@@ -31,7 +31,7 @@ public class HealthyBananas : UpgradePlusPlus<FarmAltPath>
 
 public class BananaStock : UpgradePlusPlus<FarmAltPath>
 {
-    public override int Cost => 950;
+    public override int Cost => 900;
     public override int Tier => 2;
     public override string Icon => "Tier2 Farm Icon";
     public override string Portrait => "Tier2 Farm";
