@@ -8,6 +8,8 @@ using Il2Cpp;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors.Emissions;
 using PathsPlusPlus;
 using AlternatePaths;
+using BTD_Mod_Helper.Api.Enums;
+using Il2CppAssets.Scripts.Models.Towers.Filters;
 
 namespace Wizard;
 
@@ -101,11 +103,14 @@ public class SorcererSupreme : UpgradePlusPlus<WizardAltPath>
         lightning.animation = 1;
         lightning.projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
 
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.MonkeySense))
+        {
+            lightning.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+        }
+
         towerModel.GetAttackModel().AddWeapon(lightning);
 
         towerModel.GetAttackModel().weapons[0].rate /= 1.8f;
-
-
         towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().damage += 3;
         towerModel.GetAttackModel().weapons[0].projectile.pierce += 4;
     }

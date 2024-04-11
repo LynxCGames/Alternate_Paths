@@ -62,6 +62,7 @@ public class GlueMine : UpgradePlusPlus<GlueGunnerAltPath>
 
         bomb.GetDamageModel().damage = 0;
         bomb.GetDamageModel().immuneBloonProperties = BloonProperties.None;
+        bomb.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
         bomb.AddBehavior(Game.instance.model.GetTowerFromId("GlueGunner-100").GetAttackModel().weapons[0].projectile.GetBehavior<CreateSoundOnProjectileCollisionModel>().Duplicate());
         bomb.collisionPasses = new int[] { -1, 0, 1 };
 

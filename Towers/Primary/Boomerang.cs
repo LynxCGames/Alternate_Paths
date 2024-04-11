@@ -13,6 +13,7 @@ using PathsPlusPlus;
 using AlternatePaths.Displays.Projectiles;
 using System.Linq;
 using Il2CppAssets.Scripts.Models.Towers.Weapons.Behaviors;
+using Il2Cpp;
 
 namespace Boomerang;
 
@@ -24,17 +25,14 @@ public class CamoTraining : UpgradePlusPlus<BoomerangAltPath>
     public override string Portrait => "Tier1 Boomerang";
 
     public override string DisplayName => "Camo Training";
-    public override string Description => "Can now hit and deal additional damage to Camo Bloons.";
+    public override string Description => "Can now hit and boomerangs deal additional damage to Camo Bloons.";
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
         towerModel.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
 
-        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-        {
-            weaponModel.projectile.hasDamageModifiers = true;
-            weaponModel.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Camo", 1, 1, false, false) { name = "CamoModifier_" });
-        }
+        towerModel.GetAttackModel().weapons[0].projectile.hasDamageModifiers = true;
+        towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Camo", 1, 1, false, false) { name = "CamoModifier_" });
     }
 }
 
@@ -138,6 +136,7 @@ public class PlasmaChakrams : UpgradePlusPlus<BoomerangAltPath>
         foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
         {
             weaponModel.projectile.GetDamageModel().damage += 4;
+            weaponModel.projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
             weaponModel.projectile.GetBehavior<AddBehaviorToBloonModel>().GetBehavior<DamageOverTimeModel>().interval *= .5f;
             weaponModel.projectile.GetBehavior<AddBehaviorToBloonModel>().GetBehavior<DamageOverTimeModel>().damage += 5;
             weaponModel.projectile.GetBehavior<AddBehaviorToBloonModel>().lifespan *= 2;

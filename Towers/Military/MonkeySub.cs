@@ -6,6 +6,8 @@ using Il2Cpp;
 using PathsPlusPlus;
 using AlternatePaths;
 using Il2CppAssets.Scripts.Models.Towers.Behaviors.Emissions;
+using BTD_Mod_Helper.Api.Enums;
+using Il2CppAssets.Scripts.Models.Towers.Filters;
 
 namespace MonketSub;
 
@@ -42,6 +44,11 @@ public class Torpedos : UpgradePlusPlus<SubAltPath>
         torpedo.rate = towerModel.GetAttackModel().weapons[0].rate * 2.3f;
         torpedo.projectile.scale /= 1.65f;
         torpedo.name = "Torpedo";
+
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.AdvancedIntel))
+        {
+            torpedo.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+        }
 
         towerModel.GetAttackModel().AddWeapon(torpedo);
     }

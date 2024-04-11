@@ -185,8 +185,8 @@ public class SidewinderAce : UpgradePlusPlus<PlaneAltPath>
         }
 
 
-        var carrier = Game.instance.model.GetTower(TowerType.MonkeyBuccaneer, 4).GetAttackModel(1).Duplicate();
-        var plane = Game.instance.model.GetTowerFromId("BuccaneerGreaterPlane").Duplicate();
+        var carrier = Game.instance.model.GetTower(TowerType.MonkeyBuccaneer, 5).GetAttackModel(1).Duplicate();
+        var plane = carrier.weapons[0].projectile.GetBehavior<CreateTowerModel>().tower;
         var gatling = Game.instance.model.GetTower(TowerType.HeliPilot, 4).GetAttackModel().weapons[2].Duplicate();
 
         plane.GetBehavior<TowerExpireOnParentUpgradedModel>().parentTowerUpgradeTier = 5;
@@ -215,11 +215,8 @@ public class SidewinderAce : UpgradePlusPlus<PlaneAltPath>
         plane.GetAttackModel(1).AddWeapon(gatling);
 
 
-        plane.baseId = "BuccaneerLesserPlane";
-        carrier.weapons[0].GetBehavior<SubTowerFilterModel>().baseSubTowerId = "BuccaneerLesserPlane";
         carrier.weapons[0].GetBehavior<SubTowerFilterModel>().maxNumberOfSubTowers = 2;
 
-        carrier.weapons[0].projectile.GetBehavior<CreateTowerModel>().tower = plane;
         towerModel.AddBehavior(carrier);
     }
 }

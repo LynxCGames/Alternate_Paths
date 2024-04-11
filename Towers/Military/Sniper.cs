@@ -120,12 +120,18 @@ public class FlackGun : UpgradePlusPlus<SniperAltPath>
         var shrapnel = Game.instance.model.GetTower(TowerType.TackShooter).GetAttackModel().weapons[0].projectile.Duplicate();
         shrapnel.pierce = 3;
         shrapnel.GetBehavior<TravelStraitModel>().Lifespan *= 1.5f;
-        shrapnel.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+
+
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.NightVisionGoggles))
+        {
+            shrapnel.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+        }
 
         if (towerModel.appliedUpgrades.Contains(UpgradeType.FullMetalJacket))
         {
             shrapnel.GetDamageModel().immuneBloonProperties = BloonProperties.None;
         }
+
         if (towerModel.appliedUpgrades.Contains(UpgradeType.ShrapnelShot))
         {
             shrapnel.GetDamageModel().damage = 3;
@@ -169,26 +175,30 @@ public class Bloonzooka : UpgradePlusPlus<SniperAltPath>
         rocket.rate = Game.instance.model.GetTower(TowerType.SniperMonkey).GetAttackModel().weapons[0].rate;
         rocket.projectile.GetBehavior<TravelStraitModel>().Lifespan *= 3;
         rocket.projectile.GetBehavior<TravelStraitModel>().Speed /= 1.45f;
-        rocket.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
 
 
         var shrapnel = Game.instance.model.GetTower(TowerType.TackShooter).GetAttackModel().weapons[0].projectile.Duplicate();
         shrapnel.GetBehavior<TravelStraitModel>().Speed *= 1.5f;
         shrapnel.GetBehavior<TravelStraitModel>().Lifespan *= 1.75f;
-        shrapnel.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
 
 
         var blast = rocket.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
         blast.GetDamageModel().damage = 7;
         blast.radius = 30;
         blast.pierce = 65;
-        blast.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
         blast.GetDamageModel().immuneBloonProperties = BloonProperties.None;
 
 
         var explosion = rocket.projectile.GetBehavior<CreateEffectOnContactModel>().effectModel;
         explosion.scale *= 3f;
 
+
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.NightVisionGoggles))
+        {
+            rocket.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+            shrapnel.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+            blast.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+        }
 
         if (towerModel.appliedUpgrades.Contains(UpgradeType.FullMetalJacket))
         {

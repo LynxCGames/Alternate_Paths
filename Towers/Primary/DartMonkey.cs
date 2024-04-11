@@ -1,10 +1,7 @@
 ﻿using BTD_Mod_Helper.Extensions;
 using Il2CppAssets.Scripts.Models.Towers;
 using Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors;
-using Il2CppAssets.Scripts.Models.Towers.Weapons;
 using Il2CppAssets.Scripts.Unity;
-using Il2CppSystem.Linq;
-using System.Linq;
 using Il2Cpp;
 using BTD_Mod_Helper.Api.Enums;
 using Il2CppAssets.Scripts.Models.Towers.Filters;
@@ -21,14 +18,11 @@ public class BloontoniumDarts : UpgradePlusPlus<DartMonkeyAltPath>
     public override string Portrait => "Tier1 Dart";
 
     public override string DisplayName => "Bloontonium Darts";
-    public override string Description => "Darts gain the ability to pop Lead Bloons. Spike-o-Pult gains increased damage.";
+    public override string Description => "Darts can now pop all Bloon types. Spike-o-Pult gains increased damage.";
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        foreach (var damageModel in towerModel.GetDescendants<DamageModel>().ToArray())
-        {
-            damageModel.immuneBloonProperties = BloonProperties.None;
-        }
+        towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
 
         if (towerModel.appliedUpgrades.Contains(UpgradeType.SpikeOPult))
         {
@@ -45,7 +39,7 @@ public class RubberSeeking : UpgradePlusPlus<DartMonkeyAltPath>
     public override string Portrait => "Tier2 Dart";
 
     public override string DisplayName => "Rubber Seeking Darts";
-    public override string Description => "Darts can now seek out Bloons.";
+    public override string Description => "Darts now seek out Bloons.";
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
@@ -55,12 +49,9 @@ public class RubberSeeking : UpgradePlusPlus<DartMonkeyAltPath>
         seeking.constantlyAquireNewTarget = true;
 
 
-        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-        {
-            weaponModel.projectile.AddBehavior(seeking);
-            weaponModel.projectile.GetBehavior<TravelStraitModel>().Lifespan *= 4;
-            weaponModel.projectile.pierce += 1;
-        }
+        towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(seeking);
+        towerModel.GetAttackModel().weapons[0].projectile.GetBehavior<TravelStraitModel>().Lifespan *= 4;
+        towerModel.GetAttackModel().weapons[0].projectile.pierce += 1;
     }
 }
 
@@ -79,22 +70,8 @@ public class DartGunner : UpgradePlusPlus<DartMonkeyAltPath>
         towerModel.range += 5;
         towerModel.GetAttackModel().range += 5;
 
-        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-        {
-            weaponModel.rate /= 1.4f;
-        }
-
-        foreach (var damageModel in towerModel.GetDescendants<DamageModel>().ToArray())
-        {
-            damageModel.damage += 1;
-        }
-
-
-        //if (IsHighestUpgrade(towerModel))
-        //{
-        //towerModel.display = towerModel.GetBehavior<DisplayModel>().display =
-        //Game.instance.model.GetTower(TowerType.SniperMonkey, 0, 0, 3).display;
-        //}
+        towerModel.GetAttackModel().weapons[0].rate /= 1.4f;
+        towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().damage += 1;
     }
 }
 
@@ -110,21 +87,14 @@ public class Rifleman : UpgradePlusPlus<DartMonkeyAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        var damage = new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" };
-
-        towerModel.GetAttackModel().weapons[0].projectile.hasDamageModifiers = true;
-
         towerModel.range += 8;
         towerModel.GetAttackModel().range += 8;
 
-        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-        {
-            weaponModel.rate /= 4;
+        towerModel.GetAttackModel().weapons[0].rate /= 4;
+        towerModel.GetAttackModel().weapons[0].projectile.pierce += 2;
 
-            weaponModel.projectile.AddBehavior(damage);
-            weaponModel.projectile.collisionPasses = new int[] { -1, 0, 1 };
-            weaponModel.projectile.pierce += 2;
-        }
+        towerModel.GetAttackModel().weapons[0].projectile.hasDamageModifiers = true;
+        towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
     }
 }
 
@@ -152,23 +122,19 @@ public class DartTank : UpgradePlusPlus<DartMonkeyAltPath>
         var missileWeapon = Game.instance.model.GetTower(TowerType.BombShooter, 1, 2).GetAttackModel().weapons[0].Duplicate();
         missileWeapon.rate = Game.instance.model.GetTower(TowerType.DartMonkey).GetAttackModel().weapons[0].rate;
         missileWeapon.projectile.display = Game.instance.model.GetTower(TowerType.DartlingGunner, 0, 3).GetAttackModel().weapons[0].projectile.display;
-        missileWeapon.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
 
+        if (towerModel.appliedUpgrades.Contains(UpgradeType.EnhancedEyesight))
+        {
+            missileWeapon.projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+            missileWeapon.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
+        }
 
         var missile = missileWeapon.projectile.GetBehavior<CreateProjectileOnContactModel>().projectile;
         missile.GetDamageModel().damage = 8;
         missile.hasDamageModifiers = true;
         missile.AddBehavior(new DamageModifierForTagModel("aaa", "Moabs", 1, 56, false, false) { name = "MoabModifier_" });
-        missile.GetDescendants<FilterInvisibleModel>().ForEach(model => model.isActive = false);
         missile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
 
         towerModel.GetAttackModel().AddWeapon(missileWeapon);
-
-
-        //var ability = Game.instance.model.GetTower(TowerType.BombShooter, 0, 5).GetAbility();
-        //ability.description = "Fires a powerful warhead at the strongest MOAB-class Bloon on screen.";
-        //ability.Cooldown += 8;
-
-        //towerModel.AddBehavior(ability);
     }
 }

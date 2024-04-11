@@ -11,13 +11,9 @@ namespace AlternatePaths;
 
 public class AlternatePaths : BloonsTD6Mod
 {
-    //foreach (var behavior in Game.instance.model.GetTower(TowerType.BananaFarm, 0, 0, 5).behaviors)
-    //{
-    //    ModHelper.Msg<AlternatePaths>(behavior.TypeName());
-    //}
 }
 
-public class DartMonkeyAltPath : PathPlusPlus
+    public class DartMonkeyAltPath : PathPlusPlus
 {
     public override string Tower => TowerType.DartMonkey;
     public override int UpgradeCount => 5;

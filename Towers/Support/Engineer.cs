@@ -31,16 +31,8 @@ public class TemperedNails : UpgradePlusPlus<EngineerAltPath>
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
         towerModel.GetAttackModel().weapons[0].projectile.hasDamageModifiers = true;
-
-        foreach (var weaponModel in towerModel.GetDescendants<WeaponModel>().ToArray())
-        {
-            weaponModel.projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
-        }
-
-        foreach (var damageModel in towerModel.GetDescendants<DamageModel>().ToArray())
-        {
-            damageModel.immuneBloonProperties = BloonProperties.None;
-        }
+        towerModel.GetAttackModel().weapons[0].projectile.AddBehavior(new DamageModifierForTagModel("aaa", "Ceramic", 1, 3, false, false) { name = "CeramicModifier_" });
+        towerModel.GetAttackModel().weapons[0].projectile.GetDamageModel().immuneBloonProperties = BloonProperties.None;
 
         if (towerModel.appliedUpgrades.Contains(UpgradeType.SentryGun))
         {
@@ -71,9 +63,7 @@ public class BurstFire : UpgradePlusPlus<EngineerAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-
-            towerModel.GetAttackModel().weapons[0].emission = new ArcEmissionModel("ArcEmissionModel_", 3, 0, 25, null, false, false);
-        
+        towerModel.GetAttackModel().weapons[0].emission = new ArcEmissionModel("ArcEmissionModel_", 3, 0, 25, null, false, false);
     }
 }
 
