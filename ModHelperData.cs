@@ -3,12 +3,11 @@
 public static class ModHelperData
 {
     public const string WorksOnVersion = "42.0";
-    public const string Version = "1.2.2";
+    public const string Version = "1.3.2";
     public const string Name = "4th Path Overhaul";
     public const string Author = "LynxC";
 
-    public const string Description = "Adds a 4th upgrade path to every tower in the game. 16 towers currently available - " +
-        "Dart Monkey, Boomerang Monkey, Bomb Shooter, Tack Shooter, Ice Monkey, Glue Gunner, Sniper Monkey, Monkey Sub, Monkey Ace, Heli Pilot, Dartling Gunner, Wizard, Ninja, Banana Farm, Spike Factory, and Engineer.";
+    public const string Description = "Adds a 4th upgrade path to EVERY tower in the game. (WARNING: Beast Handler is a little broken with paths++ but the upgrades work as intended)";
 
     public const string Dependencies = "doombubbles/paths-plus-plus";
 

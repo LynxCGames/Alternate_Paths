@@ -44,7 +44,7 @@ public class SplitMagic : UpgradePlusPlus<WizardAltPath>
 
     public override void ApplyUpgrade(TowerModel towerModel, int tier)
     {
-        towerModel.GetAttackModel().weapons[0].emission = new ArcEmissionModel("ArcEmissionModel_", 2, 0, 15, null, false, false);
+        towerModel.GetAttackModel().weapons[0].emission = new ArcEmissionModel("ArcEmissionModel_", 2, 0, 15, null, true, false);
     }
 }
 

@@ -5,24 +5,6 @@
 
 <h1 align="center">4th Path Overhaul</h1>
 
-A Paths++ mod that adds a brand new upgrade path to every tower in the game. Create powerful prototype sentries with the engineer, wield pure pop magic with the sorcerer supreme wizard, block off the exit with the lockdown spike factory, or just obliterate the Bloons with the sniper or tack shooter.
-
-Currently Available Towers:
-    - Dart Monkey
-    - Boomerang Monkey
-    - Bomb Shooter
-    - Tack Shooter
-    - Ice Monkey
-    - Glue Gunner
-    - Sniper
-    - Monkey Sub
-    - Monkey Ace
-    - Heli Pilot
-    - Dartling Gunner
-    - Wizard
-    - Ninja
-    - Banana Farm
-    - Spike Factory
-    - Engineer
+A Paths++ mod that adds a brand new upgrade path to EVERY tower in the game. Create powerful prototype sentries with the engineer, wield pure pop magic with the sorcerer supreme wizard, block off the exit with the lockdown spike factory, or just obliterate the Bloons with the sniper or tack shooter.
 
 [![Requires BTD6 Mod Helper](https://raw.githubusercontent.com/gurrenm3/BTD-Mod-Helper/master/banner.png)](https://github.com/gurrenm3/BTD-Mod-Helper#readme)
